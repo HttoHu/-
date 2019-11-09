@@ -1,132 +1,76 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+﻿#define function 
 #include <iostream>
-#include <string>
-#include <vector>
-#include <queue>
-#include <stdio.h>
-/*
-	水平太差，自己写不出来，仔细看了代码后模仿了,还炸了好几次，然后再看代码，无限循环😭
-*/
-// node 表示一个状态, 在r,c位置的朝向
-struct Node
+#define program int
+#define main main()
+class merdog_io
 {
-	Node() {}
-	Node(int _r, int _c, int _dir) :r(_r), c(_c), dir(_dir) {}
-	int r = 0;
-	int c = 0;
-	int dir = 0;
-};
-const char* dirs = "NESW";
-const char* turns = "FLR";
-int dc[] = { 0,1,0,-1 };
-int dr[] = { -1,0,1,0 };
-int get_dir(char ch) {
-	return strchr(dirs, ch) - dirs;
-}
-int get_turns(char ch)
-{
-	return strchr(turns, ch) - turns;
-}
-int path[10][10][4];
-Node move_a[10][10][4];
-int edge[10][10][4][3];
-int r0, c0, r1, c1, r2, c2, dir;
-
-bool input()
-{
-	std::string program_name;
-	char first_dir;
-	std::cin >> program_name;
-	std::cin >> r0 >> c0 >> first_dir >> r2 >> c2;
-	r1 = r0 + dr[dir];
-	c1 = c0 + dc[dir];
-
-	dir = get_dir(first_dir);
-	while (true)
+public:
+	int input_int()
 	{
-		int r, c;
-		std::cin >> r;
-		if (r == 0)
-			break;
-		std::cin >> c;
-		std::string word;
-		while (std::cin >> word && word != "*")
-		{
-			int _dir = get_dir(word[0]);
-			for (int i = 1; i < word.size(); i++)
-			{
-				edge[r][c][_dir][get_turns(word[i])] = 1;
-			}
-		}
+		int ret;
+		std::cin >> ret;
+		return ret;
+	}
+	template<typename _Ty>
+	void cout(_Ty t)
+	{
+		std::cout << t;
+	}
+	template<typename _T1, typename ..._Ty>
+	void cout(_T1 arg0, _Ty... args)
+	{
+		cout(arg0);
+		cout(args...);
+	}
+}mstd;
+#define std mstd
+#define elif else if
+
+function bool is_prime(int x)
+{
+	for (int i = 2; i * i <= x; i++)
+	{
+		if (x % i==0)
+			return false;
 	}
 	return true;
-
 }
-bool inside(int r, int c)
+int n;
+bool is_p[1000] = { true };
+int arr[100];
+int vis[100] = { 0 };
+function void set_prime()
 {
-	return r <= 9 && r >= 1 && c <= 9 && c >= 1;
-}
-Node walk(Node n, int w)
-{
-	int dir = n.dir;
-	if (w == 1)
-		// 逻辑上是(dir-1)%4，但是防止负数导致模运算出现未定义行为,我们加三
-		dir = (dir + 3) % 4;
-	if (w == 2)
-		dir = (dir + 1) % 4;
-	return Node(n.r + dr[dir], n.c + dc[dir], dir);
-}
-void print_ans(Node u)
-{
-	std::vector<Node> nodes;
-	nodes.push_back(u);
-	while (path[u.r][u.c][u.dir] != 0)
+	for (int i = 2; i < 1000; i += 1)
 	{
-		u = move_a[u.r][u.c][u.dir];
-		nodes.push_back(u);
-	}
-	nodes.push_back(Node(r0, c0, dir));
-	for (int i = nodes.size()-1; i >= 0; i--)
-	{
-		std::cout << "(" << nodes[i].r << "," << nodes[i].c << ")";
+		is_p[i] = is_prime(i);
 	}
 }
-void solve()
+function void dfs(int cur)
 {
-	std::queue<Node> qu;
-	memset(path, -1, sizeof(path));
-	Node u(r1, c1, dir);
-	path[u.r][u.c][u.dir] = 0;
-	qu.push(u);
-
-	while (!qu.empty())
+	if (cur == n && is_p[arr[0] + arr[n - 1]])
 	{
-		Node tmp = qu.front();
-		qu.pop();
-		if (tmp.r == r2 && tmp.c == c2)
+		for (int i = 0; i < n; i += 1)
 		{
-			print_ans(tmp);
-			return;
+			std.cout(arr[i], ' ');
 		}
-		for (int i = 0; i < 3; i++)
+		std.cout('\n');
+	}
+	else for (int i = 2; i <= n; i += 1)
+	{
+		if (!vis[i] && is_p[arr[cur-1] + i])
 		{
-			Node tmp2 = walk(tmp, i);
-			if (edge[tmp.r][tmp.c][tmp.dir][i] && inside(tmp2.r, tmp2.c) && path[tmp2.r][tmp2.c][tmp2.dir] < 0)
-			{
-				path[tmp2.r][tmp2.c][tmp2.dir] = path[tmp.r][tmp.c][tmp.dir] + 1;
-				move_a[tmp2.r][tmp2.c][tmp2.dir] = tmp;
-				qu.push(tmp2);
-			}
+			arr[cur] = i;
+			vis[i] = 1;
+			dfs(cur + 1);
+			vis[i] = 0;
 		}
 	}
-	std::cout << " No solution found!";
 }
-int main()
+program main
 {
-	while (true)
-	{
-		input();
-		solve();
-	}
-	return 0;
+	arr[0] = 1;
+	n = std.input_int();
+	set_prime();
+	dfs(1);
 }
