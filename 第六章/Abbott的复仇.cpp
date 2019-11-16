@@ -1,76 +1,53 @@
-﻿#define function 
-#include <iostream>
-#define program int
-#define main main()
-class merdog_io
-{
-public:
-	int input_int()
-	{
-		int ret;
-		std::cin >> ret;
-		return ret;
-	}
-	template<typename _Ty>
-	void cout(_Ty t)
-	{
-		std::cout << t;
-	}
-	template<typename _T1, typename ..._Ty>
-	void cout(_T1 arg0, _Ty... args)
-	{
-		cout(arg0);
-		cout(args...);
-	}
-}mstd;
-#define std mstd
-#define elif else if
-
-function bool is_prime(int x)
-{
-	for (int i = 2; i * i <= x; i++)
-	{
-		if (x % i==0)
-			return false;
-	}
-	return true;
-}
+﻿#include <iostream>
+#include <vector>
+int cnt=0;
 int n;
-bool is_p[1000] = { true };
-int arr[100];
-int vis[100] = { 0 };
-function void set_prime()
+int L;
+int S[100];
+int dfs(int cur)
 {
-	for (int i = 2; i < 1000; i += 1)
+	if (cnt++ == n)
 	{
-		is_p[i] = is_prime(i);
-	}
-}
-function void dfs(int cur)
-{
-	if (cur == n && is_p[arr[0] + arr[n - 1]])
-	{
-		for (int i = 0; i < n; i += 1)
+		for (int i = 0; i < cur; i++)
 		{
-			std.cout(arr[i], ' ');
+			std::cout << (char)('A' + S[i]);
 		}
-		std.cout('\n');
+		std::cout << std::endl;
+		return 0;
 	}
-	else for (int i = 2; i <= n; i += 1)
+	for (int i = 0; i < L; i++)
 	{
-		if (!vis[i] && is_p[arr[cur-1] + i])
+		S[cur] = i;
+		bool ok = true;
+		for (int j = 1; j * 2 <= cur + 1; j++)
 		{
-			arr[cur] = i;
-			vis[i] = 1;
-			dfs(cur + 1);
-			vis[i] = 0;
+			int equal = 1;
+			for (int k = 0; k < j; k++)
+			{
+				if (S[cur - k] != S[cur - k - j])
+				{
+					equal = 0;
+					break;
+				}
+			}
+			if (equal)
+			{
+				ok = false;
+				break;
+			}
+		}
+		if (ok)
+		{
+			if (!dfs(cur + 1))
+				return 0;
 		}
 	}
+	return 1;
 }
-program main
+int main()
 {
-	arr[0] = 1;
-	n = std.input_int();
-	set_prime();
-	dfs(1);
+	std::cin >> n;
+	std::cin >> L;
+	dfs(0);
+	return 0;
 }
