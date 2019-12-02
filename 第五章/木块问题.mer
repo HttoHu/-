@@ -1,0 +1,162 @@
+using vector;
+struct Ins
+{
+	int src = 0;
+	int dest = 0;
+	int ins_no = 0;
+
+}
+function Ins make_ins(int a,int b,int c)
+{
+    Ins ret{src:a,dest:b,ins_no:c};
+    return ret;
+}
+struct pair{
+    int first;
+    int second;
+}
+function pair make_pair(int a,int b)
+{
+    pair ret={first:a,second:b};
+    return ret;
+}
+//ins_no
+/*
+0 move onto
+1 move over
+2 pile onto
+3 pile over
+*/
+vector<Ins> ins_vec;
+vector<vector<int>> room;
+function pair search(int n)
+{
+	for (int i = 0; i < room.size(); i+=1)
+	{
+		for (int j = 0; j < room[i].size(); j+=1)
+		{
+			if (room[i][j] == n)
+			{
+				return make_pair(i,j);
+			}
+		}
+	}
+}
+function pair pop_above(int n)
+{
+	pair pos = search(n);
+	int above_count = room[pos.first].size() - pos.second - 1;
+	for (int i = 0; i < above_count; i+=1)
+	{
+		int back = room[pos.first].back();
+		room[back].push_back(back);
+		room[pos.first].pop_back();
+	}
+
+	return search(n);
+}
+function void execute(Ins in)
+{
+	switch (in.ins_no)
+	{
+	case 0:
+		pair src_pos1 = pop_above(in.src);
+		pair dest_pos1 = pop_above(in.dest);
+		int back1 = room[src_pos1.first].back();
+		room[dest_pos1.first].push_back(back1);
+		room[src_pos1.first].pop_back();
+		break;
+	case 1:
+		pair src_pos2 = pop_above(in.src);
+		pair dest_pos2 = search(in.dest);
+		int back2 = room[src_pos2.first].back();
+		room[dest_pos2.first].push_back(back2);
+		room[src_pos2.first].pop_back();
+		break;
+	case 2:
+		pair src_pos3 = search(in.src);
+		pair dest_pos3 = pop_above(in.dest);
+		int count3 = room[src_pos3.first].size() - src_pos3.second;
+		vector<int> tmp3;
+		for (int i = 0; i < count3; i+=1)
+		{
+			tmp3.push_back(room[src_pos3.first].back());
+			room[src_pos3.first].pop_back();
+		}
+		for (int i = 0; i < count3; i+=1)
+		{
+			room[dest_pos3.first].push_back(tmp3[count3 - i - 1]);
+		}
+		break;
+	case 3:
+		pair src_pos = search(in.src);
+		pair dest_pos = search(in.dest);
+		int count = room[src_pos.first].size() - src_pos.second;
+		vector<int> tmp;
+		for (int i = 0; i < count; i+=1)
+		{
+			tmp.push_back(room[src_pos.first].back());
+			room[src_pos.first].pop_back();
+		}
+		for (int i = 0; i < count; i+=1)
+		{
+			room[dest_pos.first].push_back(tmp[count - i - 1]);
+		}
+		break;
+	}
+}
+function void input()
+{
+	while (true)
+	{
+		//move 1 onto 2
+		string tmp=std.input_string();
+		if (tmp == "quit")
+        {
+			break;
+        }
+		bool is_move = (tmp=="move");
+		int src_n=std.input_int();
+        tmp=std.input_string();
+		bool is_onto=(tmp == "onto");
+		int dest_n=std.input_int();
+		int ins_n = 0;
+		if (!is_onto)
+        {
+			ins_n+=1;
+        }
+		if (!is_move)
+        {
+			ins_n += 2;
+        }
+		ins_vec.push_back(make_ins(src_n, dest_n, ins_n));
+	}
+}
+function void show()
+{
+	for (int i = 0; i < room.size(); i+=1)
+	{
+		std.cout(i,":");
+		for (int j = 0; j < room[i].size(); j+=1)
+		{
+			std.cout(" ", room[i][j]);
+		}
+		std.cout("\n");
+	}
+}
+program main
+{
+	int n=std.input_int();
+	for (int i = 0; i < n; i+=1)
+	{
+		vector<int> tmp=make<vector<int>>;
+        room.push_back(tmp);
+		room.back().push_back(i);
+	}
+	input();
+	for (int i=0;i<ins_vec.size();i+=1)
+	{
+		execute(ins_vec[i]);
+	}
+	show();
+}
