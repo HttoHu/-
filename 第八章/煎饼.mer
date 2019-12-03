@@ -1,0 +1,57 @@
+using vector;
+function void flip(vector<int>*vec, int from,int to)
+{
+    for(;from<to;from+=1)
+    {
+        int tmp=*vec[from];
+        *vec[from]=*vec[to];
+        *vec[to]=tmp;
+        to-=1;
+    }
+}
+function int max_pos(vector<int>* vec,int from,int to)
+{
+    int max=*vec[from];
+    int cur_pos=from;
+    for(;from<to;from+=1)
+    {
+        if(*vec[from]>max)
+        {
+            max=*vec[from];
+            cur_pos=from;
+        }
+    }
+    return cur_pos;
+}
+/*
+TestCase 1:
+6
+8
+4
+6
+7
+5
+2
+
+*/
+program main
+{
+    int n=std.input_int();
+    vector<int> vec;
+    for(int i=0;i<n;i+=1)
+    {
+        int tmp=std.input_int();
+        vec.push_back(tmp);
+    }
+    for(int i=0;i<n;i+=1)
+    {
+        int max_p=max_pos(&vec,0,n-1-i);
+        flip(&vec,0,max_p);
+        flip(&vec,0,n-i-1);
+    }
+    std.cout('\n');
+    for(int i=0;i<n;i+=1)
+    {
+        std.cout(vec[i],'\n');
+    }
+}
