@@ -1,0 +1,27 @@
+// Ugly Number UVA-136 Page 120 
+using set;
+int ceoff[]={2,3,5};
+program main
+{
+	set<int> pq;
+	pq.insert(1);
+	for(int i=1;;i+=1)
+	{
+		int x=pq.pos_visit(0);
+		pq.erase(x);
+		// damn ,merodg doesn't have long type so that when i<-1500 , the result will be negative.
+		if(i==11)
+		{
+			std.cout("The 1500'th ugly number is ",x,".\n");
+			break;
+		}
+		for(int j=0;j<3;j+=1)
+		{
+			int x2=x*ceoff[j];
+			if(!pq.exists(x2))
+			{
+				pq.insert(x2);
+			}
+		}
+	}
+}
