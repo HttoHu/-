@@ -159,4 +159,5 @@ program main
 		execute(ins_vec[i]);
 	}
 	show();
+	std.sleep(100000);
 }
