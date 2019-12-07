@@ -1,0 +1,22 @@
+using vector;
+function void print_subset(int n, vector<int> A,int cur)
+{
+	if(cur==n)
+	{
+		for(int i=0;i<cur;i+=1)
+		{
+			if(A[i]==1){std.cout(i+1);}
+		}
+		std.cout('\n');
+		return;
+	}
+	A[cur]=1;
+	print_subset(n,A,cur+1);
+	A[cur]=0;
+	print_subset(n,A,cur+1);
+}
+program main
+{
+	vector<int> vec(5,0);
+	print_subset(vec.size(),vec,0);
+}
