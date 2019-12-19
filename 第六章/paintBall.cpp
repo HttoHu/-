@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 /*
+我写的是错的额，我页不知道为什么。我知道它可以从北边出去，但是为什么。。。。你试试下面的输入，
+显示无解....
 3
 500 500 499
 0 0 999
@@ -34,9 +36,13 @@ void dfs(int x,int y){
         warface[x][y]=1;
     }
     else return;
-    dfs(x+1,y);
-    dfs(x,y+1);
-    dfs(x+1,y+1);
+    for(int i=-1;i<=1;i++)
+    {
+        for(int j=-1;j<=1;j++)
+        if(i!=x&&j!=y){
+            dfs(i+x,j+y);
+        }
+    }
 }
 void print_war_face()
 {
@@ -78,5 +84,4 @@ int main(){
         cout<<"IMPOSSIBLE";
     }
     return 0;
-    
 }
