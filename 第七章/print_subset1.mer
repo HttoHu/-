@@ -1,24 +1,1 @@
-using vector;
-function void print_subset(int n, vector<int> A,int cur)
-{
-	for(int i=0;i<cur;i+=1)
-	{
-		std.cout(A[i]+1,' ');
-	}
-	std.cout('\n');
-	int s=0;
-	if(cur!=0)
-	{
-		s=A[cur-1]+1;
-	}
-	for(int i=s;i<n;i+=1)
-	{
-		A[cur]=i;
-		print_subset(n,A,cur+1);
-	}
-}
-program main
-{
-	vector<int> vec(6,1);
-	print_subset(vec.size(),vec,0);
-}	
+using vector;function void print_subset(int n, vector<int> A,int cur){	for(int i=0;i<cur;i+=1)	{		std.cout(A[i]+1,' ');	}	std.cout('\n');	int s=0;	if(cur!=0)	{		s=A[cur-1]+1;	}	for(int i=s;i<n;i+=1)	{		A[cur]=i;		print_subset(n,A,cur+1);	}}program main{	vector<int> vec(6,1);	print_subset(vec.size(),vec,0);}	
