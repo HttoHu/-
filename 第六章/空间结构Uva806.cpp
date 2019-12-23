@@ -2,6 +2,7 @@
 #include <string>
 #include <deque>
 #include <algorithm>
+#include <string.h>
 using namespace std;
 void trans_number_set(const deque<int> &deq);
 deque<int> trans_number(int n);
@@ -9,6 +10,7 @@ const int maxn = 100 + 5;
 int tree[4 * 4 * 4 * 4 * 4 * 4];
 int buf[maxn][maxn];
 int image_count = 1;
+string output;
 void trans_pic(int cur_node, int r, int c, int w)
 {
     if (w == 1)
@@ -117,18 +119,21 @@ void draw_driver(int n)
 {
     deque<int> deq;
     int tmp;
-    while (cin >> tmp)
+    while (true)
     {
+        cin>>tmp;
         if (tmp == 0)
         {
-            for (int i = 0; i < n; i++)
+            cin>> tmp;
+            output+= "Image " +to_string(image_count++)+"\n";
+            for (int i = 0; i < -n; i++)
             {
-                for(int j=0;j<n;j++){
-                    cout<<"*";
+                for(int j=0;j<-n;j++){
+                    output+="*";
                 }
-                if (i != n - 1)
-                    cout << endl;
+                output+='\n';
             }
+            output+='\n';
             return;
         }
         if (tmp == -1)
@@ -152,16 +157,16 @@ void draw_driver(int n)
     }
     draw_buf(1, -n - 1, -n - 1, -n);
     n = -n;
-    cout << "Image " << image_count++ << endl;
+    output+= "Image " +to_string(image_count++)+"\n";
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < n; j++)
         {
-            cout << ".*"[buf[j][n - 1 - i]];
+            output+= ".*"[buf[j][n - 1 - i]];
         }
-        if (i != n - 1)
-            cout << endl;
+        output+="\n";
     }
+    output+='\n';
 }
 int main()
 {
@@ -173,7 +178,7 @@ int main()
         int n;
         cin >> n;
         if (n == 0)
-            return 0;
+            break;
         if (n < 0)
         {
             draw_driver(n);
@@ -189,21 +194,18 @@ int main()
             getchar();
         }
         trans_pic(1, n - 1, n - 1, n);
-        cout << endl;
         tree_trans_to_numbers(1, 0);
         sort(numbers.begin(), numbers.end());
-        cout << "Image " << image_count++ << endl;
-        cout << "Total Total number of black nodes = " << numbers.size() << endl;
+        output+= "Image " +to_string(image_count++)+"\n";
         for (int i = 0; i < numbers.size(); i++)
         {
-            cout << numbers[i];
-            if (i + 1 % 12 == 0)
-            {
-                cout << endl;
+            output+=to_string(numbers[i])+' ';
+            if((i+1)%12==0){
+                output+='\n';
             }
-            else
-                cout << " ";
         }
+        output+= "Total number of black nodes = " +to_string(numbers.size())+"\n\n";
     }
+    cout<<output;
     return 0;
 }
