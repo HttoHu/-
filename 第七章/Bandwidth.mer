@@ -1,0 +1,160 @@
+/*
+	yep you need to prune, and this version haven't yet....
+	and it will be very slow, I counted the sample input, and my i7 7700 takes 6s to get the answer.
+*/
+$pre_input
+A:FB;B:GC;D:GC;F:AGH;E:HD
+$end
+using vector;
+using map;
+using set;
+string cur_min_str="ZZZZZZZZZZZ";
+int cur_min=999;
+string str(10,' ');
+vector<char> node_table;
+function bool exists(char ch,int cur){
+	for(int i=0;i<cur;i+=1){
+		if(str[i]==ch)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+map<char,string> graph;
+function void insert_element_to_graph(char ch,string str){
+	if(!graph.exists(ch))
+	{
+		node_table.push_back(ch);
+		graph.insert(ch,str);
+	}
+	else
+	{	
+		string tt=graph[ch];
+		for(int i=0;i<str.size();i+=1)
+		{
+			bool ok=true;
+			for(int j=0;j<tt.size();j+=1){
+				if(str[i]==tt[j])
+				{
+					ok=false;
+				}
+			}
+			if(ok)
+			{
+				graph[ch]=graph[ch]+str[i];
+			}
+		}
+	}
+	for(int i=0;i<str.size();i+=1)
+	{
+		char cur_char=str[i];
+		if(graph.exists(cur_char))
+		{
+			bool need_to_insert=true;
+			string tmp=graph[cur_char];
+			for(int j=0;j<tmp.size();j+=1){
+				if(ch==tmp[j])
+				{
+					need_to_insert=false;
+					break;
+				}
+			}
+			if(need_to_insert){
+				graph[cur_char]=graph[cur_char]+ch;
+			}
+			continue;
+		}
+		else
+		{	
+			node_table.push_back(cur_char);
+			graph.insert(cur_char,make<string>(1,ch));
+		}
+	}
+}
+function void input_graph(){
+	string str=std.input_string()+";";
+	int str_index=0;
+	while(str_index<str.size())
+	{
+		char cur_str=str[str_index];
+		string tmp="";
+		str_index+=2;
+		while(str[str_index]!=';')
+		{
+			tmp=tmp+str[str_index];
+			str_index+=1;
+		}
+		str_index+=1;
+		insert_element_to_graph(cur_str,tmp);
+	}
+}
+function int cur_bandwidth(int cur,char dest){
+	char cur_char=str[cur];
+	for(int i=0;i<str.size();i+=1){
+		if(str[i]==dest)
+		{
+			return cast<int>(abs(cast<real>(cur-i)));
+		}
+	}
+	return 0;
+}
+function int count_bandwidth(){
+	int max=0;
+	for(int i=0;i<node_table.size();i+=1){
+		int cur_count=0;
+		string tmp=graph[str[i]];
+		for(int j=0;j<tmp.size();j+=1){
+			cur_count=cur_bandwidth(i,tmp[j]);
+			if(max<cur_count)
+			{
+				max=cur_count;
+			}
+		}
+	}
+	if(max<=cur_min&&str<cur_min_str)
+	{
+		cur_min_str=str;
+	}
+	return max;
+}
+function int solve(int cur)
+{
+	if(cur==node_table.size()){
+		return count_bandwidth();
+	}
+	else{
+		int this_min=99;
+		for(int i=0;i<node_table.size();i+=1){
+			if(exists(node_table[i],cur))
+			{
+				continue;
+			}
+			str[cur]=node_table[i];
+			int tmp=solve(cur+1);
+			if(tmp<this_min){
+				this_min=tmp;
+				if(this_min<cur_min)
+				{
+					cur_min=this_min;
+					return cur_min;
+				}
+			}
+		}
+		return this_min;
+	}
+}
+/*
+
+EHDCGBFA  ->3
+time:133.055
+*/
+program main
+{
+	input_graph();
+	solve(0);
+	for(int i=0;i<node_table.size();i+=1){
+		std.cout(cur_min_str[i],' ');
+	}
+	std.cout("->",cur_min);
+}
